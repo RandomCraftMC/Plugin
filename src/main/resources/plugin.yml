@@ -2,3 +2,5 @@ name: RandomCraftPlugin
 version: 1.0-SNAPSHOT
 main: me.tsblock.randomcraft.plugin.RandomCraftPlugin
 api-version: 1.15
+depend:
+  - ProtocolLib

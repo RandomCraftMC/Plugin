@@ -8,7 +8,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-public class ItemFrame implements Listener {
+public class ItemFrameProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (!event.getPlayer().hasPermission("randomcraft.frame") && event.getPlayer().getWorld().getName().equals("world")) {

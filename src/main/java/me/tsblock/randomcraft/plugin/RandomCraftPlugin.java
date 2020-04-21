@@ -1,17 +1,21 @@
 package me.tsblock.randomcraft.plugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import me.tsblock.randomcraft.plugin.Command.CommandManager;
-import me.tsblock.randomcraft.plugin.Config.BaseConfig;
 import me.tsblock.randomcraft.plugin.Config.MapConfig;
-import me.tsblock.randomcraft.plugin.Listeners.ItemFrame;
+import me.tsblock.randomcraft.plugin.Listeners.ItemFrameProtection;
+import me.tsblock.randomcraft.plugin.Listeners.SendOpPackets;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RandomCraftPlugin extends JavaPlugin {
     private CommandManager commandManager;
     private MapConfig mapConfig;
+    private ProtocolManager protocolManager;
 
     @Override
     public void onEnable() {
+        protocolManager = ProtocolLibrary.getProtocolManager();
         setupConfig();
         registerEvents();
         setupCommands();
@@ -22,11 +26,6 @@ public final class RandomCraftPlugin extends JavaPlugin {
         saveConfig();
     }
 
-    private void setupConfig() {
-        mapConfig = new MapConfig(this);
-        mapConfig.setup();
-    }
-
     public void saveConfig() {
         mapConfig.save();
     }
@@ -35,11 +34,21 @@ public final class RandomCraftPlugin extends JavaPlugin {
         return mapConfig;
     }
 
+    public ProtocolManager getProtocolManager() {
+        return protocolManager;
+    }
+
     private void setupCommands() {
         commandManager = new CommandManager(this);
     }
 
+    private void setupConfig() {
+        mapConfig = new MapConfig(this);
+        mapConfig.setup();
+    }
+
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new ItemFrame(), this);
+        getServer().getPluginManager().registerEvents(new ItemFrameProtection(), this);
+        getServer().getPluginManager().registerEvents(new SendOpPackets(this), this);
     }
 }

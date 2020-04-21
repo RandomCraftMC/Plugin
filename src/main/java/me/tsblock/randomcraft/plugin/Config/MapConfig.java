@@ -4,8 +4,8 @@ import me.tsblock.randomcraft.plugin.RandomCraftPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapConfig extends BaseConfig {
 
@@ -15,23 +15,20 @@ public class MapConfig extends BaseConfig {
 
     @Override
     public void setup() {
-        if (getConfig().get("maps") == null) {
-            return;
-        }
-        createFile();
         File mapFolder = new File("world/data/");
         File[] mapFiles = mapFolder.listFiles();
-        HashMap<Integer, String> mapHashMap = new HashMap<>();
+        HashMap<Integer, String> mapsHashMap = new HashMap<>();
         for (File mapFile : mapFiles) {
             if (mapFile.isFile() & mapFile.getName().startsWith("map_")) {
                 String mapIDString = mapFile.getName().replaceAll("[^0-9]", ""); // regex lol
                 int mapID = Integer.parseInt(mapIDString);
-                if (mapID >= 10000) { // yeah i know it's hardcoded but guess what? it's only made for randomcraft, so who cares.
-                    mapHashMap.put(mapID, "");
+                if (mapID >= 10000) {
+                    mapsHashMap.put(mapID, "");
+                    plugin.getServer().getConsoleSender().sendMessage(mapID + " " + mapsHashMap.get(mapID));
                 }
             }
         }
-        getConfig().set("maps", mapHashMap);
+        getConfig().set("maps", mapsHashMap);
         save();
     }
 
@@ -39,17 +36,18 @@ public class MapConfig extends BaseConfig {
     public void reload() {
         File mapFolder = new File("world/data/");
         File[] mapFiles = mapFolder.listFiles();
-        HashMap<Integer, String> mapHashMap = (HashMap<Integer, String>) getConfig().get("maps");
+        /* add new maps to config */
+        HashMap<String, Object> mapHashMap = getHashMap("maps");
         for (File mapFile : mapFiles) {
             if (mapFile.isFile() & mapFile.getName().startsWith("map_")) {
                 String mapIDString = mapFile.getName().replaceAll("[^0-9]", ""); // regex lol
                 int mapID = Integer.parseInt(mapIDString);
                 if (mapHashMap.get(mapID) == null && mapID >= 10000) {
-                    mapHashMap.put(mapID, "");
+                    mapHashMap.put(String.valueOf(mapID), "");
                 }
             }
         }
-        getConfig().set("maps", mapHashMap);
+        setHashMap("maps", mapHashMap);
         config = YamlConfiguration.loadConfiguration(file);
     }
 }
